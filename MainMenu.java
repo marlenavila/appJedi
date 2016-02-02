@@ -1,6 +1,7 @@
 package com.example.marlen.appjedi;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 public class MainMenu extends AppCompatActivity implements View.OnClickListener {
 
     Button btMem,btRank,btLog,btMed,btCalc;
+    DbHelper baseDades;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,14 +28,22 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
         btLog.setOnClickListener(this);
         btMed.setOnClickListener(this);
         btCalc.setOnClickListener(this);
+
+        baseDades = new DbHelper(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.bt_Memory:
-                Intent intent = new Intent(getApplicationContext(),Memory.class);
-                startActivity(intent);
+                /*Intent intent = new Intent(getApplicationContext(),Memory.class);
+                startActivity(intent);*/
+               Cursor c = baseDades.getUser("Marlen");
+                if(c.moveToFirst()){
+                    Integer aux = c.getInt(c.getColumnIndex(baseDades.CN_POINTS));
+                    aux +=2;
+                    baseDades.updatePoints("Marlen",aux);
+                }
                 break;
             case R.id.bt_Ranking:
                 Intent intent1 = new Intent(getApplicationContext(),Ranking.class);
