@@ -31,13 +31,13 @@ public class Ranking extends AppCompatActivity {
         if(c.moveToFirst()){
             do{
                 String userName = c.getString(c.getColumnIndex(baseDades.CN_NAME));
-                //String password = c.getString(c.getColumnIndex(baseDades.CN_PASS));
                 Integer userPoints = c.getInt(c.getColumnIndex(baseDades.CN_POINTS));
                 User newUser = new User();
                 newUser.setName(userName);
-               // newUser.setPassword(password);
                 newUser.setPoints(userPoints);
-                users.add(newUser);
+                if(newUser.getPoints() != 0){ //no mostra en el ranking els usuaris que encara no han fet cap partida
+                    users.add(newUser);
+                }
             }while(c.moveToNext());
         }
 

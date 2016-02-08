@@ -1,6 +1,8 @@
 package com.example.marlen.appjedi;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,32 +36,49 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
+        Intent intent;
         switch (v.getId()){
             case R.id.bt_Memory:
-                /*Intent intent = new Intent(getApplicationContext(),Memory.class);
-                startActivity(intent);*/
-               Cursor c = baseDades.getUser("Marlen");
+                intent = new Intent(getApplicationContext(),Memory.class);
+                startActivity(intent);
+              /* Cursor c = baseDades.getUser("Marlen");
                 if(c.moveToFirst()){
                     Integer aux = c.getInt(c.getColumnIndex(baseDades.CN_POINTS));
                     aux +=2;
-                    baseDades.updatePoints("Marlen",aux);
-                }
+                    baseDades.updatePoints("Marlen", aux);
+                }*/
                 break;
             case R.id.bt_Ranking:
-                Intent intent1 = new Intent(getApplicationContext(),Ranking.class);
-                startActivity(intent1);
+                intent = new Intent(getApplicationContext(),Ranking.class);
+                startActivity(intent);
                 break;
             case R.id.bt_Login:
-                Intent intent2 = new Intent(getApplicationContext(),Login.class);
-                startActivity(intent2);
+                SharedPreferences culo = getSharedPreferences("culo", Context.MODE_PRIVATE); //instancio el culo del login
+                String interiorCulo = culo.getString("userName",null);
+                if(interiorCulo == null){ //sino hi ha cap user que hagi fet login, me'n vaig a la pantalla de login
+                    intent = new Intent(getApplicationContext(),Login.class);
+                    startActivity(intent);
+                }
+                else{
+                    //si me'n vaig a la pantalla del perfil directe haig d fer un bundle per pasar-li totes les dades (database instance needed)
+                    Cursor c1 = baseDades.getUser(interiorCulo);
+                    c1.moveToFirst(); //c1 apunta al principi de la taula, moveTOFirst needed pqe apunti a la primera pos on esta el nom i no peti
+                    Bundle bundle = new Bundle();
+                    bundle.putString("userName",interiorCulo);
+                    bundle.putInt("points", c1.getInt(c1.getColumnIndex(baseDades.CN_POINTS)));
+                    intent = new Intent(getApplicationContext(),UserProfile.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+
                 break;
             case R.id.bt_Music:
-                Intent intent3 = new Intent(getApplicationContext(),MediaPlayer.class);
-                startActivity(intent3);
+                intent = new Intent(getApplicationContext(),Media_Player.class);
+                startActivity(intent);
                 break;
             case R.id.bt_Calc:
-                Intent intent4 = new Intent(getApplicationContext(),Calculator.class);
-                startActivity(intent4);
+                intent = new Intent(getApplicationContext(),Calculator.class);
+                startActivity(intent);
                 break;
         }
 

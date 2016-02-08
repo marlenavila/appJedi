@@ -17,7 +17,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public static String CN_POINTS = "points";
 
-    public static String CN_ADDRESS = "address";
+    public static String CN_NOTIFICATION = "notification";
 
     //Declaracion del nombre de la base de datos
     public static final int DATABASE_VERSION = 1;
@@ -33,7 +33,7 @@ public class DbHelper extends SQLiteOpenHelper {
             + CN_NAME + " TEXT PRIMARY KEY UNIQUE,"
             + CN_PASS + " TEXT,"
             + CN_POINTS + " INTEGER"
-            + CN_ADDRESS + "TEXT);";
+            + CN_NOTIFICATION + "TEXT);";
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -56,7 +56,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 null,                                   // The values for the WHERE clause
                 null,                                   // don't group the rows
                 null,                                   // don't filter by row groups
-                CN_POINTS + " DESC"                     // The sort order
+                CN_POINTS + " ASC"                     // The sort order
         );
         return c;
     }
@@ -92,10 +92,10 @@ public class DbHelper extends SQLiteOpenHelper {
         db.update(USER_TABLE, cv, CN_NAME + "=?", new String[]{name});
     }
 
-    public void updateAddress(String name, String address){ //modificar adreça user
+    public void updatePassword(String name, String new_pass){ //actualitzar password
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(CN_ADDRESS,address);
+        cv.put(CN_PASS,new_pass);
         db.update(USER_TABLE, cv, CN_NAME + "=?", new String[]{name});
     }
 
