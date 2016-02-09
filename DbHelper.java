@@ -19,6 +19,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public static String CN_NOTIFICATION = "notification";
 
+    public static String CN_PIC = "image";
+
     //Declaracion del nombre de la base de datos
     public static final int DATABASE_VERSION = 1;
 
@@ -32,8 +34,9 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String USER_TABLE_CREATE = "CREATE TABLE " + USER_TABLE + " ("
             + CN_NAME + " TEXT PRIMARY KEY UNIQUE,"
             + CN_PASS + " TEXT,"
-            + CN_POINTS + " INTEGER"
-            + CN_NOTIFICATION + "TEXT);";
+            + CN_POINTS + " INTEGER,"
+            + CN_NOTIFICATION + " TEXT,"
+            + CN_PIC + " TEXT);";
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -63,7 +66,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public Cursor getUser(String userName) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String[] columns = {CN_NAME,CN_PASS,CN_POINTS};
+        String[] columns = {CN_NAME,CN_PASS,CN_POINTS,CN_NOTIFICATION,CN_PIC};
         String[] where = {userName};
         Cursor c = db.query(
                 USER_TABLE,  // The table to query
@@ -96,6 +99,13 @@ public class DbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(CN_PASS,new_pass);
+        db.update(USER_TABLE, cv, CN_NAME + "=?", new String[]{name});
+    }
+
+    public void updatePic(String name, String new_pic){ //actualitzar imatge perfil
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CN_PIC,new_pic);
         db.update(USER_TABLE, cv, CN_NAME + "=?", new String[]{name});
     }
 

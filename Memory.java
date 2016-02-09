@@ -1,5 +1,8 @@
 package com.example.marlen.appjedi;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
@@ -12,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.material.joanbarroso.flipper.CoolImageFlipper;
@@ -20,8 +24,7 @@ import java.util.Random;
 
 public class Memory extends AppCompatActivity {
 
-    CoolImageFlipper coolImageFlipper;
-    ImageView i0;
+    static CoolImageFlipper coolImageFlipper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +35,17 @@ public class Memory extends AppCompatActivity {
                     .add(R.id.container, new MemoryGameFragment())
                     .commit();
         }
+        coolImageFlipper = new CoolImageFlipper(getApplicationContext());
     }
 
-    public static class MemoryGameFragment extends Fragment {
+    public class MemoryGameFragment extends Fragment {
         private static final int NUM_IMAGES = 16;
-        private static final String LOG_TAG = MemoryGameFragment.class.getSimpleName();
+        //private static final String LOG_TAG = MemoryGameFragment.class.getSimpleName();
 
         private boolean busy;
         private Handler handler = new Handler();
+        private Integer attempts = 0;
+        private TextView p;
 
         private ImageView[] images_list = new ImageView[NUM_IMAGES];
         private int[] images = new int[]{
@@ -80,7 +86,7 @@ public class Memory extends AppCompatActivity {
                 });
             }
 
-            //timer = (Chronometer) rootView.findViewById(R.id.timer);
+            p = (TextView)rootView.findViewById(R.id.tv_punts);
 
             busy = false;
             lastIndexClicked = NONE;
@@ -92,10 +98,10 @@ public class Memory extends AppCompatActivity {
         /** A handy (but not recommended) way to retrieve a resource id by name in code. */
         private int getImageId(final String imageIdName){
             final int imageId = getResources().getIdentifier(imageIdName, "id", getActivity().getPackageName());
-            if(0 == imageId){
+            /*if(0 == imageId){
                 Log.e(LOG_TAG, "Could not find button with id " + imageIdName);
                 throw new RuntimeException("Cannot find necessary button..");
-            }
+            }*/
             return imageId;
         }
 
@@ -145,7 +151,8 @@ public class Memory extends AppCompatActivity {
             if(imagePermanentlyRevealed[indexClicked]) return; // Nothing to do here..
 
             // Set the image of the button to its corresponding picture.
-            i.setImageResource(images[ImageIndex[indexClicked]]);
+           // i.setImageResource(images[ImageIndex[indexClicked]]);
+            coolImageFlipper.flipImage(getDrawable(images[ImageIndex[indexClicked]]), i);
             if(NONE == lastIndexClicked){
                 // This is the first button clicked.
                 lastIndexClicked = indexClicked;
@@ -160,10 +167,13 @@ public class Memory extends AppCompatActivity {
                     imagePermanentlyRevealed[indexClicked] = true;
                     lastIndexClicked = NONE;
 
+                    ++attempts;
+                    p.setText(attempts.toString()); //actualitzo punts
                     checkVictoryState();
                 } else {
                     lastIndexClicked = NONE;
-
+                    ++attempts;
+                    p.setText(attempts.toString()); //actualitzo punts
                     // Do not let the user perform clicks while we are waiting
                     busy = true;
 
@@ -190,8 +200,20 @@ public class Memory extends AppCompatActivity {
                 if(!revealed) return; // if any button has not been revealed, the game is on!
             }
 
+            SharedPreferences sp = getSharedPreferences("culo", Context.MODE_PRIVATE);
+            String nom = sp.getString("userName", null);
+            DbHelper baseDades = new DbHelper(getApplicationContext());
+            if(nom != null){
+                Cursor c = baseDades.getUser(nom);
+                if(c.moveToFirst()){
+                    baseDades.updatePoints(nom, attempts);
+                }
+            }
+
             //TODO Congratulate the player with an alert dialog
             Toast.makeText(getActivity(), "Congratulations! You win!", Toast.LENGTH_SHORT).show();
+
+            p.setText("0");
 
             // Reset the game after a short delay
             handler.postDelayed(new Runnable() {

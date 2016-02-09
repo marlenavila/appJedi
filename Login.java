@@ -42,6 +42,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         ContentValues values = new ContentValues();
         values.put(baseDades.CN_NAME, String.valueOf(user.getText())); //content values used to modify the database
         values.put(baseDades.CN_PASS, String.valueOf(password.getText()));
+        values.put(baseDades.CN_NOTIFICATION, "--");
         SharedPreferences.Editor editor = culo.edit();
 
         Bundle holis = new Bundle();//bundle to pass info to another activity with an intent (user profile in this case)
@@ -63,6 +64,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             Intent intent = new Intent(getApplicationContext(), UserProfile.class);
             intent.putExtras(holis);
             startActivity(intent);
+            finish();
         }
     }
 
@@ -86,6 +88,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 Intent intent = new Intent(getApplicationContext(), UserProfile.class);
                 intent.putExtras(holis);
                 startActivity(intent);
+                finish();
             }
         }
         else {

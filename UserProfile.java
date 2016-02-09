@@ -1,7 +1,9 @@
 package com.example.marlen.appjedi;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -43,6 +45,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     List<Address> l;
     LocationManager lm;
     LocationListener lis;
+    Uri pic;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -104,7 +107,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 Geocoder gc = new Geocoder(getApplicationContext());
                 try {
                     l = gc.getFromLocation(location.getLatitude(),
-                            location.getLongitude(), 5);
+                            location.getLongitude(), 2); //nmés dues línies
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -131,17 +134,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, lis);
     }
 
-    @Override
-    protected void onPause() {
-        lm.removeGpsStatusListener((GpsStatus.Listener) lis);
-
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -171,15 +163,29 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                         Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 pickAnImage.setType("image/*");
-
                 startActivityForResult(pickAnImage, 2);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Are you sure?");
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        baseDades.updatePic(name.getText().toString(), pic.toString());
+                        Toast.makeText(getApplicationContext(), "Profile pic changed", Toast.LENGTH_LONG).show();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplicationContext(), "Bona feina", Toast.LENGTH_LONG).show();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 break;
             case R.id.ok:
                 String pass = password.getText().toString();
-                baseDades.updatePassword(userName.getText().toString(), pass);
-                //Cursor c = baseDades.getUser(name.getText().toString());
-                //String polla = c.getString(c.getColumnIndex(baseDades.CN_PASS));
-                //Toast.makeText(getApplicationContext(), polla , Toast.LENGTH_SHORT).show();
+                baseDades.updatePassword(name.getText().toString(), pass);
+                Toast.makeText(getApplicationContext(), "Password changed" , Toast.LENGTH_SHORT).show();
                 layout.setVisibility(View.GONE);
                 break;
         }
@@ -194,6 +200,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         if (resultCode == RESULT_OK) {
             data.getData();
             Uri selectedImage = data.getData();
+            pic = selectedImage;
             Log.v("PICK", "Selected image uri" + selectedImage);
             try {
                 profPic.setImageBitmap(MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage));
