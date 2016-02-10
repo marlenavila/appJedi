@@ -215,6 +215,7 @@ public class Memory extends AppCompatActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             switch (item.getItemId()){
                 case R.id.resetDataMemory:
+                    //TODO el reset este no funca, don't know why
                     resetImages();
                     attempts = 0;
                     p.setText("0");
