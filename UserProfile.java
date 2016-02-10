@@ -45,7 +45,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     List<Address> l;
     LocationManager lm;
     LocationListener lis;
-    Uri pic;
+    Uri pic,pic2;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -84,6 +84,16 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         Integer points = bundle.getInt("points");
         number_points.setText(points.toString());
         notif.setText(bundle.getString("notif"));
+        if(bundle.getString("pic")!= null) pic2 = Uri.parse(bundle.getString("pic"));
+
+        if(pic2!=null){
+            try {
+                profPic.setImageBitmap(MediaStore.Images.Media.getBitmap(this.getContentResolver(), pic2));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
 
         //GPS
         lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -137,16 +147,21 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.changePassword:
                 layout.setVisibility(View.VISIBLE);
+                return true;
+            case R.id.internet:
+                intent = new Intent(Intent.ACTION_VIEW);
+                startActivity(intent);
                 return true;
             case R.id.log_out:
                 SharedPreferences culo = getSharedPreferences("culo", MODE_PRIVATE);
                 SharedPreferences.Editor editor = culo.edit();
                 editor.putString("userName", null); //buido el sharepreferences
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(), Login.class);
+                intent = new Intent(getApplicationContext(), Login.class);
                 startActivity(intent);
                 finish(); //para q cuando tire atrás no vuelva al user_profile
                 return true;
@@ -165,18 +180,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 pickAnImage.setType("image/*");
                 startActivityForResult(pickAnImage, 2);
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Are you sure?");
+                builder.setMessage("Profile pic changed");
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         baseDades.updatePic(name.getText().toString(), pic.toString());
-                        Toast.makeText(getApplicationContext(), "Profile pic changed", Toast.LENGTH_LONG).show();
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplicationContext(), "Bona feina", Toast.LENGTH_LONG).show();
                     }
                 });
                 AlertDialog dialog = builder.create();

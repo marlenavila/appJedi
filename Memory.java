@@ -1,6 +1,9 @@
 package com.example.marlen.appjedi;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Handler;
@@ -23,6 +26,8 @@ import com.example.material.joanbarroso.flipper.CoolImageFlipper;
 import java.util.Random;
 
 public class Memory extends AppCompatActivity {
+
+    //TODO toolbar al container amb opcio de reset on haure de cridar la funcio resetImage() i posar els attempts i tal a 0
 
     static CoolImageFlipper coolImageFlipper;
 
@@ -210,10 +215,29 @@ public class Memory extends AppCompatActivity {
                 }
             }
 
-            //TODO Congratulate the player with an alert dialog
-            Toast.makeText(getActivity(), "Congratulations! You win!", Toast.LENGTH_SHORT).show();
+            //TODO me petael alertdialog, sino lo arreglo cmbiarlo a toast
 
-            p.setText("0");
+            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+            builder.setMessage("You WIN!!!");
+            builder.setPositiveButton("Ranking", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface arg0, int arg1) {
+                    Intent intent = new Intent(getApplicationContext(),Ranking.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+            builder.setNegativeButton("Try again", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    resetImages();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+          /*  p.setText("0");
+            attempts = 0;*/
 
             // Reset the game after a short delay
             handler.postDelayed(new Runnable() {

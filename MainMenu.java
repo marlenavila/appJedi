@@ -66,6 +66,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                     Bundle bundle = new Bundle();
                     bundle.putString("userName",interiorCulo);
                     bundle.putInt("points", c1.getInt(c1.getColumnIndex(baseDades.CN_POINTS)));
+                    bundle.putString("pic",c1.getString(c1.getColumnIndex(baseDades.CN_PIC)));
                     intent = new Intent(getApplicationContext(),UserProfile.class);
                     intent.putExtras(bundle);
                     startActivity(intent);

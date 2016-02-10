@@ -1,6 +1,7 @@
 package com.example.marlen.appjedi;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -98,6 +99,15 @@ public class Calculator extends AppCompatActivity implements View.OnClickListene
             case R.id.dialer:
                 intent = new Intent(Intent.ACTION_DIAL);
                 startActivity(intent);
+                return true;
+            case R.id.logOutFromCalc:
+                SharedPreferences culo = getSharedPreferences("culo", MODE_PRIVATE);
+                SharedPreferences.Editor editor = culo.edit();
+                editor.putString("userName", null); //buido el sharepreferences
+                editor.apply();
+                intent = new Intent(getApplicationContext(), Login.class);
+                startActivity(intent);
+                finish(); //para q cuando tire atrás no vuelva al user_profile
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
