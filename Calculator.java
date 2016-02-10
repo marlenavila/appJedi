@@ -21,6 +21,12 @@ public class Calculator extends AppCompatActivity implements View.OnClickListene
     String s, op;
     Double num1, num2, res;
 
+    //TODO La calculadora está como el culo, sólo está lo que hice cuando la empezamos en el curso xd
+    //TODO he ido haciendo lo demás (o intentándolo) y he dejado esto para el final.. pero el dialer
+    //TODO y el internete si que funcan (cuando pongáis en horizontal la pantalla se va a ver mal, y los
+    //TODO resultados no se guardaran pqe no he hecho el saveInstances que me acabo de acordar ahora xd
+    //TODO podría intentarlo ya que es un momento, pero como la calculadora está a medias no tiene sentido que guarde nada xD
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);

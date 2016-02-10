@@ -13,7 +13,14 @@ import android.media.MediaPlayer;
 
 public class Media_Player extends AppCompatActivity implements View.OnClickListener {
 
-    Button btPlay, btPause, btStop;
+    //TODO aquí debería haber una imagen y tal para que quedara más chulo (de hecho en el drawable
+    //TODO veréis qye hay un meme del trololo, aligual que 3 iconos de play pause y stop..
+    //TODO que no he podido utilitzar pqe por alguna razon d repente android studio me dice
+    //TODO que todas las fotos nuevas que me bajo ahora nse pueden cnvertir en drawable xd
+    //TODO hasta ahora no ha habido ningún problema, así q nsé que coño le pasa y lo he tenido que dejar
+    //TODO así de feo
+
+    Button btPlay, btStop;
 
     MediaPlayer mp;
 
@@ -50,11 +57,9 @@ public class Media_Player extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
 
         btPlay = (Button)findViewById(R.id.bt_Play);
-        btPause = (Button)findViewById(R.id.bt_Pause);
         btStop = (Button)findViewById(R.id.bt_Stop);
 
         btPlay.setOnClickListener(this);
-        btPause.setOnClickListener(this);
         btStop.setOnClickListener(this);
 
         mp = MediaPlayer.create(this, R.raw.song);
@@ -71,13 +76,17 @@ public class Media_Player extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.bt_Play:
-                if(mp == null)
-                    mp = MediaPlayer.create(this,R.raw.song);
-                mp.start();
-                break;
-            case R.id.bt_Pause:
-                if(mp != null)
-                    mp.pause();
+                if(btPlay.getText().equals("PLAY")) {
+                    if (mp == null)
+                        mp = MediaPlayer.create(this, R.raw.song);
+                    mp.start();
+                    btPlay.setText("PAUSE");
+                }
+                else{
+                    if(mp != null)
+                        mp.pause();
+                    btPlay.setText("PLAY");
+                }
                 break;
             case R.id.bt_Stop:
                 if(mp == null) break;

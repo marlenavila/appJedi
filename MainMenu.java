@@ -11,6 +11,9 @@ import android.widget.Button;
 
 public class MainMenu extends AppCompatActivity implements View.OnClickListener {
 
+    //TODO da como mucha pena y es extremadamente feo, solo son botones, pero como ya he comentado
+    //TODO en el TODO del mediaPlayer, no me deja poner imagenes de repente xd así que así se queda
+
     Button btMem,btRank,btLog,btMed,btCalc;
     DbHelper baseDades;
 
@@ -66,7 +69,9 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                     Bundle bundle = new Bundle();
                     bundle.putString("userName",interiorCulo);
                     bundle.putInt("points", c1.getInt(c1.getColumnIndex(baseDades.CN_POINTS)));
-                    bundle.putString("pic",c1.getString(c1.getColumnIndex(baseDades.CN_PIC)));
+                    //TODO aqui intento coger el string de la foto de perfil que hay en la base de datos
+                    //TODO para pasarselo al perfil de usuario
+                    //bundle.putString("pic",c1.getString(c1.getColumnIndex(baseDades.CN_PIC)));
                     intent = new Intent(getApplicationContext(),UserProfile.class);
                     intent.putExtras(bundle);
                     startActivity(intent);

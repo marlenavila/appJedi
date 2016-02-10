@@ -11,8 +11,11 @@ import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -32,6 +35,13 @@ public class Memory extends AppCompatActivity {
     static CoolImageFlipper coolImageFlipper;
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.memory_options, menu);
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.container);
@@ -40,6 +50,8 @@ public class Memory extends AppCompatActivity {
                     .add(R.id.container, new MemoryGameFragment())
                     .commit();
         }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_memory);
+        setSupportActionBar(toolbar);
         coolImageFlipper = new CoolImageFlipper(getApplicationContext());
     }
 
@@ -199,6 +211,29 @@ public class Memory extends AppCompatActivity {
             return ImageIndex[firstImageIndex] == ImageIndex[secondImageIndex];
         }
 
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            switch (item.getItemId()){
+                case R.id.resetDataMemory:
+                    resetImages();
+                    attempts = 0;
+                    p.setText("0");
+                    return true;
+                case R.id.logOutFromMemory:
+                    SharedPreferences culo = getSharedPreferences("culo", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = culo.edit();
+                    editor.putString("userName", null); //buido el sharepreferences
+                    editor.apply();
+                    Intent intent = new Intent(getApplicationContext(), Login.class);
+                    startActivity(intent);
+                    finish(); //para q cuando tire atrás no vuelva al user_profile
+                    return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+
+        }
+
         /** Checks if the player has won the game. If so, resets the game.*/
         private void checkVictoryState(){
             for(boolean revealed : imagePermanentlyRevealed){
@@ -215,29 +250,32 @@ public class Memory extends AppCompatActivity {
                 }
             }
 
-            //TODO me petael alertdialog, sino lo arreglo cmbiarlo a toast
+            //TODO me peta siempre este dialog cuando acabo la partida, nose porqué, así que lo
+            //TODO he puesto con un toast..el Dialog iba a tener dos botones para quedarse o para ir al ranking
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+           /* AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
             builder.setMessage("You WIN!!!");
-            builder.setPositiveButton("Ranking", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface arg0, int arg1) {
-                    Intent intent = new Intent(getApplicationContext(),Ranking.class);
-                    startActivity(intent);
-                    finish();
-                }
-            });
-            builder.setNegativeButton("Try again", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("Try again", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     resetImages();
                 }
             });
+            builder.setNegativeButton("Ranking", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(getApplicationContext(),Ranking.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
             AlertDialog dialog = builder.create();
-            dialog.show();
+            dialog.show();*/
 
-          /*  p.setText("0");
-            attempts = 0;*/
+            Toast.makeText(getApplicationContext(), "You WIN!!!!" , Toast.LENGTH_SHORT).show();
+
+            p.setText("0");
+            attempts = 0;
 
             // Reset the game after a short delay
             handler.postDelayed(new Runnable() {

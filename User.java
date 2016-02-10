@@ -7,11 +7,13 @@ public class User {
     private String name;
     private String password;
     private Integer points;
+    //private String image;
 
     User(String name, String password, int points){
         this.name = name;
         this.password = password;
         this.points = points;
+        //this.image = image;
     }
 
     User(){}
@@ -24,4 +26,10 @@ public class User {
 
     public Integer getPoints(){ return points; }
     public void setPoints(int points){ this.points = points; }
+
+
+    //TODO en teoria el plan era trabajar todo el rato con strings i luego pasar las imagenes a uri
+    //TODO pero parece que no está bien o algo como ya habréis podido ver..
+    //public String getImage(){ return image; }
+    //public void setImage(String image){ this.image = image; }
 }

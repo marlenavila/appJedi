@@ -29,28 +29,6 @@ public class Ranking extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.resetDataRanking:
-                users = null;
-                myCustomAdapter.setData(users);
-
-                return true;
-            case R.id.logOutFromRanking:
-                SharedPreferences culo = getSharedPreferences("culo", MODE_PRIVATE);
-                SharedPreferences.Editor editor = culo.edit();
-                editor.putString("userName", null); //buido el sharepreferences
-                editor.apply();
-                Intent intent = new Intent(getApplicationContext(), Login.class);
-                startActivity(intent);
-                finish(); //para q cuando tire atrás no vuelva al user_profile
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +49,11 @@ public class Ranking extends AppCompatActivity {
             do{
                 String userName = c.getString(c.getColumnIndex(baseDades.CN_NAME));
                 Integer userPoints = c.getInt(c.getColumnIndex(baseDades.CN_POINTS));
+                //String profilePic = c.getString(c.getColumnIndex(baseDades.CN_PIC));
                 User newUser = new User();
                 newUser.setName(userName);
                 newUser.setPoints(userPoints);
+                //newUser.setImage(profilePic);
                 if(newUser.getPoints() != 0){ //no mostra en el ranking els usuaris que encara no han fet cap partida
                     users.add(newUser);
                 }
@@ -84,7 +64,29 @@ public class Ranking extends AppCompatActivity {
         recView.setAdapter(myCustomAdapter);
         myCustomAdapter.setData(users);
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.resetDataRanking:
+                //TODO no funciona bien, se borra la lista en el momento, pero si vuelvo a entrar dentro
+                //TODO sigue estando todo.. nose como hacerlo para que desaparezcan permanentemente
+                users = null;
+                myCustomAdapter.setData(users);
 
+                return true;
+            case R.id.logOutFromRanking:
+                SharedPreferences culo = getSharedPreferences("culo", MODE_PRIVATE);
+                SharedPreferences.Editor editor = culo.edit();
+                editor.putString("userName", null); //buido el sharepreferences
+                editor.apply();
+                Intent intent = new Intent(getApplicationContext(), Login.class);
+                startActivity(intent);
+                finish(); //para q cuando tire atrás no vuelva al user_profile
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
 
     }
 }

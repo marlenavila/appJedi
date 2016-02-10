@@ -84,7 +84,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         Integer points = bundle.getInt("points");
         number_points.setText(points.toString());
         notif.setText(bundle.getString("notif"));
-        if(bundle.getString("pic")!= null) pic2 = Uri.parse(bundle.getString("pic"));
+
+        //TODO aquí intentaba recuperar el string del bundle del login de la foto de perfil que hay
+        //TODO en la base de datos para pasarla a uri i ponerla como imagen de perfil
+        //TODO pero da un error raro de permisos que nose como arreglar o qué estoy haciendo mal
+
+       /* if(bundle.getString("pic")!= null) pic2 = Uri.parse(bundle.getString("pic"));
 
         if(pic2!=null){
             try {
@@ -92,7 +97,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
 
         //GPS
